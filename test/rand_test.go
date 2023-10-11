@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"testing"
 	"titan-vrf/filrpc"
+	"titan-vrf/gamevrf"
 	"titan-vrf/trand"
 
 	"github.com/filecoin-project/go-address"
@@ -65,7 +66,7 @@ func TestVRFGenVerify(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = trand.FilVerifyVRFByTipSet(addr, trand.DomainSeparationTag_GameBasic, tps, entropy, vrfout)
+	err = trand.FilVerifyVRFByTipSet(trand.DomainSeparationTag_GameBasic, addr, tps, entropy, vrfout)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -110,7 +111,46 @@ func TestVRFGenVerify2(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = trand.FilVerifyVRFByTipSet(addr, trand.DomainSeparationTag_GameBasic, tps, entropy, vrfout)
+	err = trand.FilVerifyVRFByTipSet(trand.DomainSeparationTag_GameBasic, addr, tps, entropy, vrfout)
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestVRFGenVerify3(t *testing.T) {
+	nodeURL := "http://api.node.glif.io/rpc/v1"
+
+	gg := gamevrf.New(filrpc.NodeURLOption(nodeURL))
+
+	privateKey := filPrivateKey
+	publicKey := filPublicKey
+
+	var entropy []byte
+	var gameRoundInfo = GameRoundInfo{
+		GameID:    "abc-efg-hi",
+		PlayerIDs: "a,b,c,d",
+		RoundID:   "gogogogo1",
+		ReplayID:  "bilibili",
+	}
+
+	buf := new(bytes.Buffer)
+	err := gameRoundInfo.MarshalCBOR(buf)
+	if err != nil {
+		t.Fatal(err)
+	}
+	entropy = buf.Bytes()
+
+	vrfout, err := gg.GenerateVRF(trand.DomainSeparationTag_GameBasic, privateKey, entropy)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	addr, err := address.NewBLSAddress(publicKey)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = gg.VerifyVRF(trand.DomainSeparationTag_GameBasic, addr, entropy, vrfout)
 	if err != nil {
 		t.Fatal(err)
 	}

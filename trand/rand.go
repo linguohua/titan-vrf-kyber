@@ -63,8 +63,8 @@ func GenerateVRF(pers DomainSeparationTag,
 	}, nil
 }
 
-func FilVerifyVRFByTipSet(worker address.Address,
-	pers DomainSeparationTag, ts *filrpc.TipSet, entropy []byte, vrf *VRFOut) error {
+func FilVerifyVRFByTipSet(pers DomainSeparationTag, worker address.Address,
+	ts *filrpc.TipSet, entropy []byte, vrf *VRFOut) error {
 	if ts.Height() != vrf.Height {
 		return xerrors.Errorf("FilVerifyVRFByTipSet tipset height %d != %d(vrf)", ts.Height(), vrf.Height)
 	}
