@@ -5,7 +5,6 @@ import (
 	"testing"
 	"titan-vrf/filrpc"
 	"titan-vrf/gamevrf"
-	"titan-vrf/trand"
 
 	"github.com/filecoin-project/go-address"
 )
@@ -50,7 +49,7 @@ func TestVRFGenVerify(t *testing.T) {
 	}
 	entropy = buf.Bytes()
 
-	vrfout, err := trand.FilGenerateVRFByTipSet(trand.DomainSeparationTag_GameBasic, privateKey, tps, entropy)
+	vrfout, err := gamevrf.FilGenerateVRFByTipSet(gamevrf.DomainSeparationTag_GameBasic, privateKey, tps, entropy)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -66,7 +65,7 @@ func TestVRFGenVerify(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = trand.FilVerifyVRFByTipSet(trand.DomainSeparationTag_GameBasic, addr, tps, entropy, vrfout)
+	err = gamevrf.FilVerifyVRFByTipSet(gamevrf.DomainSeparationTag_GameBasic, addr, tps, entropy, vrfout)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -101,7 +100,7 @@ func TestVRFGenVerify2(t *testing.T) {
 	}
 	entropy = buf.Bytes()
 
-	vrfout := &trand.VRFOut{
+	vrfout := &gamevrf.VRFOut{
 		Height: uint64(chainHeight),
 		Proof:  filProof,
 	}
@@ -111,7 +110,7 @@ func TestVRFGenVerify2(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = trand.FilVerifyVRFByTipSet(trand.DomainSeparationTag_GameBasic, addr, tps, entropy, vrfout)
+	err = gamevrf.FilVerifyVRFByTipSet(gamevrf.DomainSeparationTag_GameBasic, addr, tps, entropy, vrfout)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -140,7 +139,7 @@ func TestVRFGenVerify3(t *testing.T) {
 	}
 	entropy = buf.Bytes()
 
-	vrfout, err := gg.GenerateVRF(trand.DomainSeparationTag_GameBasic, privateKey, entropy)
+	vrfout, err := gg.GenerateVRF(gamevrf.DomainSeparationTag_GameBasic, privateKey, entropy)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -150,7 +149,7 @@ func TestVRFGenVerify3(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = gg.VerifyVRF(trand.DomainSeparationTag_GameBasic, addr, entropy, vrfout)
+	err = gg.VerifyVRF(gamevrf.DomainSeparationTag_GameBasic, addr, entropy, vrfout)
 	if err != nil {
 		t.Fatal(err)
 	}

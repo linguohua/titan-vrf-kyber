@@ -8,6 +8,7 @@ require (
 	github.com/filecoin-project/go-address v1.1.0
 	github.com/ipfs/go-cid v0.3.2
 	github.com/minio/blake2b-simd v0.0.0-20160723061019-3f5f724cb5b1
+	github.com/nixberg/chacha-rng-go v0.1.0
 	github.com/whyrusleeping/cbor-gen v0.0.0-20210303213153-67a261a1d291
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2
 )

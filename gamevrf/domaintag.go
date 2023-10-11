@@ -1,4 +1,4 @@
-package trand
+package gamevrf
 
 // Specifies a domain for randomness generation.
 type DomainSeparationTag int64

@@ -4,7 +4,6 @@ import (
 	"sync"
 	"time"
 	"titan-vrf/filrpc"
-	"titan-vrf/trand"
 
 	"github.com/filecoin-project/go-address"
 	"golang.org/x/xerrors"
@@ -102,7 +101,7 @@ func (g *GameVRF) getGameEpoch() (uint64, error) {
 	return g.cachedEpoch + uint64(elapseEpoch), nil
 }
 
-func (g *GameVRF) GenerateVRF(pers trand.DomainSeparationTag, filBlsPrivateKey []byte, entropy []byte) (*trand.VRFOut, error) {
+func (g *GameVRF) GenerateVRF(pers DomainSeparationTag, filBlsPrivateKey []byte, entropy []byte) (*VRFOut, error) {
 	height, err := g.getGameEpoch()
 	if err != nil {
 		return nil, xerrors.Errorf("GenerateVRF getGameEpoch failed: %w", err)
@@ -118,14 +117,14 @@ func (g *GameVRF) GenerateVRF(pers trand.DomainSeparationTag, filBlsPrivateKey [
 		return nil, xerrors.Errorf("GenerateVRF getTipsetByHeight failed: %w", err)
 	}
 
-	return trand.FilGenerateVRFByTipSet(pers, filBlsPrivateKey, tps, entropy)
+	return FilGenerateVRFByTipSet(pers, filBlsPrivateKey, tps, entropy)
 }
 
-func (g *GameVRF) VerifyVRF(pers trand.DomainSeparationTag, worker address.Address, entropy []byte, vrf *trand.VRFOut) error {
+func (g *GameVRF) VerifyVRF(pers DomainSeparationTag, worker address.Address, entropy []byte, vrf *VRFOut) error {
 	tps, err := g.getTipsetByHeight(vrf.Height)
 	if err != nil {
 		return xerrors.Errorf("VerifyVRF getTipsetByHeight failed: %w", err)
 	}
 
-	return trand.FilVerifyVRFByTipSet(pers, worker, tps, entropy, vrf)
+	return FilVerifyVRFByTipSet(pers, worker, tps, entropy, vrf)
 }

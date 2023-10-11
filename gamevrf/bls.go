@@ -1,4 +1,4 @@
-package trand
+package gamevrf
 
 import (
 	bls "github.com/drand/kyber-bls12381"

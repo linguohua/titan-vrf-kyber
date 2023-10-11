@@ -1,4 +1,4 @@
-package trand
+package gamevrf
 
 import (
 	"github.com/minio/blake2b-simd"
