@@ -33,8 +33,9 @@ func New(options ...filrpc.Option) *GameVRF {
 func (g *GameVRF) getTipsetByHeight(height uint64) (*filrpc.TipSet, error) {
 	client := filrpc.New(g.rpcOptions...)
 
-	for i := 0; i < GAME_CHAIN_EPOCH_LOOKBACK; i++ {
-		tps, err := client.ChainGetTipSetByHeight(int64(height))
+	iheight := int64(height)
+	for i := 0; i < GAME_CHAIN_EPOCH_LOOKBACK && iheight > 0; i++ {
+		tps, err := client.ChainGetTipSetByHeight(iheight)
 		if err != nil {
 			return nil, err
 		}
@@ -42,6 +43,8 @@ func (g *GameVRF) getTipsetByHeight(height uint64) (*filrpc.TipSet, error) {
 		if len(tps.Blocks()) > 0 {
 			return tps, nil
 		}
+
+		iheight--
 	}
 
 	return nil, xerrors.Errorf("getTipsetByHeight can't found a non-empty tipset from height: %d", height)
