@@ -9,6 +9,7 @@ type VRFOut struct {
 	Proof  []byte
 }
 
+// Sum256 obtain a 32 bytes randomness seed
 func (vrf *VRFOut) Sum256() [32]byte {
 	return blake2b.Sum256(vrf.Proof)
 }

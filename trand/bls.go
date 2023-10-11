@@ -16,12 +16,12 @@ func KyberBlsGenPrivateKey() ([]byte, []byte, error) {
 	priv, pub := scheme.NewKeyPair(rand2.New())
 	privb, err := priv.MarshalBinary()
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, xerrors.Errorf("KyberBlsGenPrivateKey MarshalBinary failed: %w", err)
 	}
 
 	pubb, err := pub.MarshalBinary()
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, xerrors.Errorf("KyberBlsGenPrivateKey MarshalBinary failed: %w", err)
 	}
 
 	return privb, pubb, nil
@@ -60,7 +60,7 @@ func blsVerify(pubKey []byte, vrfBase, vrfproof []byte) error {
 	sp := suite.G1().Point()
 	err := sp.UnmarshalBinary(pubKey)
 	if err != nil {
-		return err
+		return xerrors.Errorf("blsVerify UnmarshalBinary failed: %w", err)
 	}
 
 	err = scheme.Verify(sp, vrfBase, vrfproof)
@@ -74,12 +74,12 @@ func blsSign(privateKey, sigInput []byte) ([]byte, error) {
 	sc := suite.G1().Scalar()
 	err := sc.UnmarshalBinary(privateKey)
 	if err != nil {
-		return nil, xerrors.Errorf("computeVRF2 UnmarshalBinary failed: %w", err)
+		return nil, xerrors.Errorf("blsSign UnmarshalBinary failed: %w", err)
 	}
 
 	sig, err := scheme.Sign(sc, sigInput)
 	if err != nil {
-		return nil, xerrors.Errorf("computeVRF2 Sign failed: %w", err)
+		return nil, xerrors.Errorf("blsSign Sign failed: %w", err)
 	}
 
 	return sig, nil

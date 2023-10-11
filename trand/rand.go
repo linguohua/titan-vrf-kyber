@@ -12,19 +12,19 @@ import (
 func drawRandomness(rbase []byte, pers DomainSeparationTag, height uint64, entropy []byte) ([]byte, error) {
 	h := blake2b.New256()
 	if err := binary.Write(h, binary.BigEndian, int64(pers)); err != nil {
-		return nil, xerrors.Errorf("deriving randomness: %w", err)
+		return nil, xerrors.Errorf("drawRandomness deriving randomness: %w", err)
 	}
 	VRFDigest := blake2b.Sum256(rbase)
 	_, err := h.Write(VRFDigest[:])
 	if err != nil {
-		return nil, xerrors.Errorf("hashing VRFDigest: %w", err)
+		return nil, xerrors.Errorf("drawRandomness hashing VRFDigest: %w", err)
 	}
 	if err := binary.Write(h, binary.BigEndian, height); err != nil {
-		return nil, xerrors.Errorf("deriving randomness: %w", err)
+		return nil, xerrors.Errorf("drawRandomness deriving randomness: %w", err)
 	}
 	_, err = h.Write(entropy)
 	if err != nil {
-		return nil, xerrors.Errorf("hashing entropy: %w", err)
+		return nil, xerrors.Errorf("drawRandomness hashing entropy: %w", err)
 	}
 
 	return h.Sum(nil), nil
@@ -54,7 +54,7 @@ func GenerateVRF(pers DomainSeparationTag,
 	// compute vrf
 	vrf, err := blsSign(privateKey, randomness)
 	if err != nil {
-		return nil, xerrors.Errorf("GenerateVRF computeVRF failed: %w", err)
+		return nil, xerrors.Errorf("GenerateVRF blsSign failed: %w", err)
 	}
 
 	return &VRFOut{
@@ -66,7 +66,7 @@ func GenerateVRF(pers DomainSeparationTag,
 func FilVerifyVRFByTipSet(worker address.Address,
 	pers DomainSeparationTag, ts *filrpc.TipSet, entropy []byte, vrf *VRFOut) error {
 	if ts.Height() != vrf.Height {
-		return xerrors.Errorf("VerifyVRFByTipSet tipset height %d != %d(vrf)", ts.Height(), vrf.Height)
+		return xerrors.Errorf("FilVerifyVRFByTipSet tipset height %d != %d(vrf)", ts.Height(), vrf.Height)
 	}
 
 	// use min ticket
