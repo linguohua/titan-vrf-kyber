@@ -69,6 +69,10 @@ func FilVerifyVRFByTipSet(worker address.Address,
 		return xerrors.Errorf("FilVerifyVRFByTipSet tipset height %d != %d(vrf)", ts.Height(), vrf.Height)
 	}
 
+	if len(ts.Blocks()) == 0 {
+		return xerrors.Errorf("FilVerifyVRFByTipSet no block in tipset(height:%d)", ts.Height())
+	}
+
 	// use min ticket
 	minTicket := ts.MinTicket()
 	return VerifyVRF(worker.Payload(), pers, minTicket.VRFProof, entropy, vrf)
@@ -76,6 +80,9 @@ func FilVerifyVRFByTipSet(worker address.Address,
 
 func FilGenerateVRFByTipSet(pers DomainSeparationTag,
 	privateKey []byte, ts *filrpc.TipSet, entropy []byte) (*VRFOut, error) {
+	if len(ts.Blocks()) == 0 {
+		return nil, xerrors.Errorf("FilGenerateVRFByTipSet no block in tipset(height:%d)", ts.Height())
+	}
 
 	privateKey = FilBlsKey2KyberBlsKey(privateKey)
 
