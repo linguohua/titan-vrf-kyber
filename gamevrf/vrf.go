@@ -61,6 +61,7 @@ func (g *GameVRF) ForceUpdateCachedEpoch() (uint64, error) {
 	g.lck.Lock()
 	defer g.lck.Unlock()
 
+	g.isCacheValid = false
 	g.cachedTimestamp = time.Now()
 	h, err := g.getChainHead()
 	if err != nil {
