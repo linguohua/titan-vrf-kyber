@@ -93,6 +93,10 @@ func (g *GameVRF) getGameEpoch() (uint64, error) {
 	}
 
 	duration := time.Since(g.cachedTimestamp)
+	if duration < 0 {
+		return 0, xerrors.Errorf("current time is not correct with negative duration: %s", duration)
+	}
+
 	elapseEpoch := int64(duration.Seconds()) / FILECOIN_EPOCH_DURATION
 
 	return g.cachedEpoch + uint64(elapseEpoch), nil
@@ -101,11 +105,11 @@ func (g *GameVRF) getGameEpoch() (uint64, error) {
 func (g *GameVRF) GenerateVRF(pers trand.DomainSeparationTag, filBlsPrivateKey []byte, entropy []byte) (*trand.VRFOut, error) {
 	height, err := g.getGameEpoch()
 	if err != nil {
-		return nil, xerrors.Errorf("GenerateVRF getCachedHeight failed: %w", err)
+		return nil, xerrors.Errorf("GenerateVRF getGameEpoch failed: %w", err)
 	}
 
 	if height <= GAME_CHAIN_EPOCH_LOOKBACK {
-		return nil, xerrors.Errorf("GenerateVRF getCachedHeight return invalid height: %d", height)
+		return nil, xerrors.Errorf("GenerateVRF getGameEpoch return invalid height: %d", height)
 	}
 
 	lookback := height - GAME_CHAIN_EPOCH_LOOKBACK
