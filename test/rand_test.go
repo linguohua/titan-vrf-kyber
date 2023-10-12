@@ -2,9 +2,12 @@ package test
 
 import (
 	"bytes"
+	"fmt"
+	"strings"
 	"testing"
 	"titan-vrf/filrpc"
 	"titan-vrf/gamevrf"
+	"titan-vrf/trand"
 
 	"github.com/filecoin-project/go-address"
 )
@@ -153,4 +156,18 @@ func TestVRFGenVerify3(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
+	var sb strings.Builder
+	rng := trand.NewRng(vrfout.Sum256(), trand.RNGType_Normal)
+	for i := 0; i < 10; i++ {
+		sb.WriteString(fmt.Sprintf("%d,", rng.Intn(100)))
+	}
+	t.Logf("RNGType_Normal: %s", sb.String())
+
+	var sb2 strings.Builder
+	rng2 := trand.NewRng(vrfout.Sum256(), trand.RNGType_Cipher)
+	for i := 0; i < 10; i++ {
+		sb2.WriteString(fmt.Sprintf("%d,", rng2.Intn(100)))
+	}
+	t.Logf("RNGType_Cipher: %s", sb2.String())
 }

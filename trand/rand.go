@@ -8,13 +8,14 @@ const (
 	RNGType_Cipher RNGType = "cipher" // slow, but has cryptographically secure
 )
 
-type Random interface {
+// Rng random number generator interface
+type Rng interface {
 	Intn(n int) int
 	Uint64() uint64
 	Float64() float64
 }
 
-func New(seed [32]byte, typ RNGType) Random {
+func NewRng(seed [32]byte, typ RNGType) Rng {
 	switch typ {
 	case RNGType_Cipher:
 		return newChacha8(seed)
